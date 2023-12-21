@@ -28,7 +28,7 @@ example_data = {
 
 
 def prediction_page():
-    st.title(":rainbow[Laptop Price Predictor] 💻")
+    st.title(":blue[Laptop Price Predictor] 💻")
 
     label_encoders = pickle.load(open('pkl\label_encoders.pkl', "rb"))
 
@@ -79,8 +79,17 @@ def prediction_page():
         encoded_laptop_warranty_location = label_encoders['Warranty Location'].transform([laptop_warranty_location])[0]
         encoded_laptop_graphic_name = label_encoders['Graphic Name'].transform([laptop_graphic_name])[0]
 
+    if st.button("Dự Đoán"):
+        if laptop_name and laptop_cpu and laptop_graphic_name:
+            input_data = [  encoded_laptop_name, encoded_laptop_type, encoded_laptop_brand, encoded_laptop_cpu, encoded_laptop_cpu_brand, encoded_laptop_ram_type,
+                            encoded_laptop_hard_drive, encoded_laptop_resolution, encoded_laptop_os, encoded_laptop_graphic, encoded_laptop_graphic_name, laptop_price_new,
+                            laptop_ram, laptop_hard_drive_size, laptop_warranty_time, laptop_year, encoded_laptop_warranty_location]
+            input_data = [input_data]
+            predicted_price = pipe.predict(input_data)
 
-    if st.button("Predict"):
+        st.write('Giá laptop mô hình dự đoán:', '{:,.0f}₫'.format(predicted_price[0] * 1000000).replace(',', '.'))
+
+    if st.button("Dự Đoán & So Sánh"):
         options = Options()
         options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
